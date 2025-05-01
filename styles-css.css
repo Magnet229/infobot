@@ -1,0 +1,1062 @@
+/* --- Global Styles & Variables --- */
+:root {
+    /* Define base colors and sizes for easier management */
+    --primary-color: #4285f4;
+    --secondary-color: #f0f0f0; /* Light background */
+    --text-color: #333333;
+    --text-color-light: #ffffff;
+    --outgoing-chat-bg: var(--primary-color);
+    --incoming-chat-bg: rgba(255, 255, 255, 0.9);
+    --suggestion-bg: rgba(255, 255, 255, 0.9);
+    --suggestion-overlay: rgba(0, 0, 255, 0.3); /* Blue overlay */
+    --header-height-desktop: 220px; /* Approximate */
+    --typing-area-height: 100px; /* Adjust as needed */
+    --base-font-size: 16px;
+    --base-padding: 1rem;
+    --border-radius-m: 8px;
+    --border-radius-l: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+html {
+    font-size: var(--base-font-size); /* Base font size for rem units */
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--secondary-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-color);
+    padding-bottom: var(--typing-area-height); /* Space for fixed typing area */
+    position: relative; /* Needed for absolute positioning context */
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* --- Header Area --- */
+.header {
+    padding: var(--base-padding);
+    position: relative; /* Context for absolute positioned children */
+    /* Consider removing fixed height elements from flow if possible */
+}
+
+.motto {
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, 2.5rem); /* Responsive font size */
+    font-weight: 600;
+    padding: 0.5rem var(--base-padding);
+    background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    animation: gradient 8s linear infinite;
+    background-size: 300% 300%;
+    margin-bottom: 0.5rem;
+}
+
+.logo-section {
+    text-align: center; /* Center on smaller screens */
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: clamp(1.8rem, 5vw, 2.5rem); /* Responsive font size */
+    font-weight: 700;
+    background: linear-gradient(45deg, #4285f4, #34a853, #fbbc05, #ea4335);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+    letter-spacing: 1px; /* Reduced spacing */
+    text-transform: uppercase;
+    animation: titleGlow 3s ease-in-out infinite;
+}
+
+.subtitle {
+    font-size: clamp(0.9rem, 2.5vw, 1.2rem); /* Responsive font size */
+    color: #666666;
+    font-weight: 500;
+}
+
+.language-selector {
+    position: absolute;
+    top: var(--base-padding);
+    right: var(--base-padding);
+    z-index: 10;
+}
+
+.language-dropdown {
+    padding: 0.4rem 0.6rem;
+    border-radius: var(--border-radius-m);
+    border: 1px solid var(--primary-color);
+    background: rgba(255, 255, 255, 0.95);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.language-dropdown:hover {
+    background: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content { /* Contains the seal */
+    display: flex;
+    justify-content: center; /* Center seal by default */
+    align-items: center;
+    margin-top: -1rem; /* Adjust overlap */
+    position: relative; /* To potentially position seal absolutely if needed */
+}
+
+.srm-seal {
+    width: clamp(60px, 10vw, 100px); /* Responsive size */
+    height: auto; /* Maintain aspect ratio */
+    /* Resetting transform for simpler flow */
+    transform: none;
+    margin-top: 0.5rem;
+    /* position: absolute; right: var(--base-padding); top: 0; */ /* Alternative if needed */
+}
+
+
+/* --- Suggestions Area (Major Changes for Responsiveness) --- */
+.suggestions-wrapper {
+    position: relative; /* Changed from absolute */
+    width: 100%;
+    padding: 0 var(--base-padding);
+    margin-top: 1rem;
+    /* On desktop, limit width and center */
+    max-width: 1200px; /* Example max width */
+    margin-left: auto;
+    margin-right: auto;
+    display: flex; /* Use flex to manage suggestion groups and buttons */
+    flex-direction: column;
+    justify-content: center; /* Center content horizontally */
+    align-items: flex-start; /* Align items to the top */
+    gap: var(--base-padding); /* Space between elements if they wrap */
+}
+
+.suggestions-container {
+    display: none; /* Hide all by default */
+    opacity: 0;
+    pointer-events: none;
+    width: 100%; /* Take full width within the wrapper */
+    transition: opacity 0.3s ease-in-out;
+}
+
+.suggestions-container.active {
+    display: block; /* Show active group */
+    opacity: 1;
+}
+
+
+#suggestions-group-1,
+#suggestions-group-2,
+#suggestions-group-3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.5s ease;
+    width: 100%; 
+}
+
+#suggestions-group-1 {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.5s ease;
+    z-index: 3;
+}
+
+#suggestions-group-2 {
+    position: absolute;
+    top: 0;  /* Change this from previous value */
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0); /* Change this from previous value */
+    pointer-events: none;
+    transition: all 0.5s ease;
+    z-index: 2;
+}
+#suggestions-group-3 {
+    z-index: 1;
+    
+}
+
+.suggestion-list {
+    display: flex;
+    flex-wrap: wrap; /* Allow suggestions to wrap on smaller screens */
+    gap: var(--base-padding);
+    list-style: none;
+    justify-content: center; /* Center suggestions horizontally */
+    padding: 0; /* Remove default padding */
+    width: 100%; /* Ensure it takes full width of container */
+}
+
+.suggestion {
+    /*background-color: rgba(255, 255, 255, 0.9);*/
+    padding: var(--base-padding);
+    border-radius: var(--border-radius-l);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Stack icon and text vertically */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* Space between icon and text */
+    /*transition: transform 0.3s ease, box-shadow 0.3s ease;*/
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+    width: clamp(120px, 18vw, 150px); /* Responsive width */
+    aspect-ratio: 1 / 1; /* Keep square-ish */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    /*color: var(--text-color-light);  White text for contrast with overlay */
+}
+
+/*.suggestion::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 255, 0.3);
+    z-index: -1;
+    transition: background-color 0.3s ease;
+}
+
+.suggestion:hover {
+    transform: translateY(-5px); /* Lift effect 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: rgba(255,255,255,0.95);
+    color: white;
+    background-size: cover;
+    background-position: center;
+    transition: background 0.3s ease-in-out;
+}
+.suggestion:hover::before {
+     background: rgba(0, 0, 150, 0.5); /* Darker overlay on hover 
+}*/
+
+
+.suggestion .icon {
+    font-size: clamp(1.5rem, 4vw, 2rem); /* Responsive icon size */
+    width: 40px; /* Fixed size circle */
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: var(--text-color-light);
+    border-radius: 50%;
+}
+
+.suggestion .text {
+    color: black; /* White text */
+    font-size: clamp(0.8rem, 2vw, 0.9rem); /* Responsive text size */
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.scroll-button-wrapper {
+    /* Positioned below the suggestion content because parent is flex-direction: column */
+    display: flex;
+    /* Always make buttons side-by-side */
+    flex-direction: row;
+    gap: 0.5rem;
+    /* Center the button wrapper horizontally within the column */
+    align-self: center;
+    margin-left: 0; /* Ensure no left margin from previous row layout */
+    margin-top: var(--base-padding); /* Ensure space above the button wrapper */
+    /* Removed absolute positioning */
+    /* position: static; */
+}
+
+#scrollUp, #scrollDown {
+    width: 40px; /* Slightly smaller buttons */
+    height: 40px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--primary-color);
+    color: var(--text-color-light);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    font-size: 1.5rem;
+}
+
+#scrollUp:hover, #scrollDown:hover {
+    background: #3367d6; /* Darker blue */
+}
+
+
+/* --- Chat Area --- */
+.chat-area-wrapper {
+    flex-grow: 1; /* Allows chat area to take available vertical space */
+    width: 100%;
+    max-width: 1000px; /* Max width for chat content */
+    margin: 1rem auto 0; /* Center and add space above */
+    overflow: hidden; /* Contains the chat list */
+    position: relative; /* Context for chat list */
+    display: flex; /* To make chat-list take height */
+}
+
+
+.chat-list {
+    width: 100%;
+    padding: var(--base-padding);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    /* Remove fixed height, let wrapper and flex control it */
+    /* max-height: calc(100vh - var(--header-height-desktop) - var(--typing-area-height) - 2rem); */ /* Adjust calculation based on actual layout */
+    scrollbar-width: thin;
+    scrollbar-color: #aaa #f0f0f0;
+}
+
+.frequent-questions {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light background to separate the area */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.frequent-questions h5 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    color: #555; /* Darker heading color */
+    text-align: left; /* Adjust as needed */
+}
+
+.frequent-questions .suggestion-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+ .frequent-questions .suggestion-list li {
+    padding: 0.5rem 0;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    border-bottom: 1px solid #eee; /* Visual separation between items */
+    font-size: 0.9rem;
+    color: #337ab7; /* Link color */
+}
+
+.frequent-questions .suggestion-list li:last-child {
+    border-bottom: none; /* Remove border on the last item */
+}
+
+.frequent-questions .suggestion-list li:hover {
+    color: #23527c; /* Darker link color on hover */
+    background-color: #f0f0f0; /* Light background color on hover */
+}
+
+
+
+/* Scrollbar styling for Webkit browsers */
+.chat-list::-webkit-scrollbar {
+    width: 8px;
+}
+.chat-list::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+.chat-list::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 4px;
+    border: 2px solid #f0f0f0;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: messageSlide 0.4s ease-out forwards;
+    max-width: 85%; /* Limit message width */
+    position: relative; /* For icon positioning */
+}
+
+@keyframes messageSlide {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.outgoing {
+    margin-left: auto; /* Push outgoing to the right */
+    flex-direction: row-reverse; /* Avatar on the right */
+}
+
+.message .message-content {
+    display: flex;
+    gap: 0.8rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius-l);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    word-break: break-word; /* Prevent long words from overflowing */
+    position: relative; /* Context for icons inside */
+}
+
+.message.incoming .message-content {
+    background: var(--incoming-chat-bg);
+    color: var(--text-color);
+    border-top-left-radius: 0; /* Pointy corner */
+}
+
+.message.outgoing .message-content {
+    background: var(--outgoing-chat-bg);
+    color: var(--text-color-light);
+    border-top-right-radius: 0; /* Pointy corner */
+}
+
+.message .avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    align-self: flex-start; /* Align avatar to the top */
+}
+
+.message .text-content-wrapper {
+    flex-grow: 1; /* Allow text to take available space */
+}
+
+.message .text {
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+.message .text.error {
+    color: #e55865;
+    font-weight: 500;
+}
+
+/* Icons within messages (Copy, Speaker) */
+.message .message-content .icon {
+    background: rgba(0, 0, 0, 0.05); /* Subtle background */
+    color: inherit; /* Inherit text color (white or dark) */
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    align-self: flex-end; /* Align icons to bottom */
+    opacity: 0.7; /* Slightly transparent */
+    visibility: hidden; /* Hide by default */
+}
+.message:hover .message-content .icon {
+     visibility: visible; /* Show on message hover */
+}
+
+.message.incoming .message-content .icon {
+    color: var(--text-color);
+}
+.message.outgoing .message-content .icon {
+    color: var(--text-color-light);
+}
+
+.message .message-content .icon:hover {
+    background: rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+
+/* Loading Indicator */
+.loading-indicator {
+    display: flex; /* Use flex */
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.5rem 0; /* Add some padding */
+}
+
+.loading-indicator .loading-bar {
+    height: 8px; /* Thinner bars */
+    width: 100%;
+    border-radius: 4px;
+    background: linear-gradient(to right, #d0e1ff, var(--primary-color), #d0e1ff); /* Adjusted gradient */
+    background-size: 800px 100%; /* Ensure background size is set */
+    animation: animateLoading 2s linear infinite;
+}
+
+.loading-indicator .loading-bar:last-child {
+    width: 70%;
+}
+
+@keyframes animateLoading {
+    0% { background-position: -800px 0; }
+    100% { background-position: 800px 0; }
+}
+
+/* Hide text when loading */
+.message.loading .text {
+    display: none;
+}
+
+
+/* --- Typing Area --- */
+.typing-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.8rem var(--base-padding);
+    border-top: 1px solid #ddd;
+    background: #ffffff; /* White background */
+    z-index: 20;
+    height: var(--typing-area-height); /* Set fixed height */
+    display: flex;
+    flex-direction: column; /* Stack form and disclaimer */
+}
+
+.typing-form {
+    display: flex;
+    gap: 0.5rem; /* Reduced gap */
+    align-items: center; /* Align items vertically */
+    width: 100%;
+    max-width: 1000px; /* Max width for the form itself */
+    margin: 0 auto; /* Center form */
+    flex-grow: 1; /* Allow form to take space */
+}
+
+.input-wrapper {
+    flex-grow: 1; /* Input takes most space */
+    display: flex;
+    align-items: center;
+    position: relative; /* Context for autocomplete */
+    background: var(--secondary-color); /* Light grey input background */
+    border-radius: var(--border-radius-l); /* Rounded wrapper */
+    padding: 0 0.5rem; /* Padding inside wrapper */
+}
+
+.typing-input {
+    flex-grow: 1;
+    padding: 0.7rem 0.5rem; /* Adjust padding */
+    border: none; /* Remove default border */
+    outline: none; /* Remove focus outline */
+    font-size: 0.95rem;
+    background: transparent; /* Use wrapper background */
+    color: var(--text-color);
+}
+.typing-input::placeholder {
+    color: #888;
+}
+
+
+/* General Icon Styling */
+.icon.material-symbols-rounded {
+    font-size: 1.5rem; /* Default icon size */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    border: none; /* Ensure no border on buttons */
+    padding: 0; /* Remove padding if width/height set */
+}
+
+
+/* Specific Button Icons in Typing Area */
+.input-wrapper .icon {
+    color: #666; /* Default icon color in input */
+    background: transparent;
+    width: 38px;
+    height: 38px;
+}
+.input-wrapper .icon:hover {
+    color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.input-wrapper .send-button { /* Style send button distinctly */
+    color: var(--primary-color);
+    /* margin-left: 0.3rem; */ /* Optional spacing */
+}
+.input-wrapper .send-button:hover {
+    color: #3367d6;
+}
+
+
+/* Action Buttons (Theme, Voice Toggle, Delete) */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.action-buttons .icon {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: var(--text-color-light);
+}
+.action-buttons .icon:hover {
+    background: #3367d6;
+}
+
+.disclaimer-text {
+    text-align: center;
+    color: #888;
+    font-size: 0.75rem; /* Smaller text */
+    margin-top: 0.4rem; /* Space above disclaimer */
+    width: 100%;
+}
+
+/* Autocomplete List */
+#autocomplete-list {
+    /* JS should handle positioning relative to input-wrapper */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius-m);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    /* Style assumes JS sets top/left/width and display: block */
+}
+.autocomplete-item {
+    padding: 0.6rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.autocomplete-item:hover {
+    background-color: #f0f0f0;
+}
+
+
+/* --- Responsive Adjustments --- */
+
+/* Medium Screens / Tablets (e.g., <= 1024px) */
+@media (max-width: 1024px) {
+    :root {
+        --base-padding: 0.8rem;
+        --typing-area-height: 90px;
+    }
+    .suggestions-wrapper {
+        flex-direction: column; /* Stack suggestions and buttons */
+        align-items: center; /* Center stack */
+    }
+    .scroll-button-wrapper {
+        flex-direction: row; /* Buttons side-by-side */
+        margin-top: var(--base-padding);
+        margin-left: 0; /* Reset margin */
+    }
+     .chat-area-wrapper {
+        margin-top: 0.5rem; /* Reduce space */
+    }
+    .message {
+        max-width: 90%;
+    }
+    .typing-form {
+        gap: 0.4rem;
+    }
+}
+
+
+/* Small Screens / Tablets Portrait (e.g., <= 768px) */
+@media (max-width: 768px) {
+    :root {
+        --base-font-size: 15px; /* Slightly smaller base font */
+        --typing-area-height: 85px;
+    }
+
+    body {
+        padding-bottom: var(--typing-area-height); /* Update padding */
+    }
+
+    .header {
+        padding: 0.8rem var(--base-padding);
+    }
+    .logo-section { margin-bottom: 0.5rem; }
+
+    .suggestions-wrapper {
+         margin-top: 0.5rem; /* Less space */
+    }
+    .suggestion-list {
+        gap: 0.8rem; /* Less gap between suggestions */
+    }
+    .suggestion {
+        width: clamp(110px, 22vw, 130px); /* Adjust size */
+        padding: 0.8rem;
+    }
+    .suggestion .icon { font-size: 1.8rem; width: 35px; height: 35px; min-width: 35px; }
+    .suggestion .text { font-size: 0.8rem; }
+
+    .chat-area-wrapper {
+        margin: 0.5rem var(--base-padding) 0; /* Add side margin */
+        max-width: none; /* Remove max-width */
+    }
+    .chat-list {
+        padding: var(--base-padding) 0.5rem; /* Adjust padding */
+    }
+
+    .message {
+        max-width: 92%;
+        margin-bottom: 1.2rem;
+    }
+    .message .message-content {
+        padding: 0.7rem 0.9rem;
+        gap: 0.6rem;
+    }
+    .message .avatar { width: 30px; height: 30px; }
+    .message .text { font-size: 0.9rem; }
+
+    .typing-area {
+        padding: 0.6rem var(--base-padding);
+    }
+    .typing-form {
+        flex-wrap: wrap; /* Allow action buttons to wrap */
+        justify-content: center;
+    }
+    .input-wrapper {
+        width: 100%; /* Full width on its own line */
+        margin-bottom: 0.5rem; /* Space below input if buttons wrap */
+        padding: 0 0.4rem;
+    }
+    .typing-input { padding: 0.6rem 0.4rem; font-size: 0.9rem; }
+    .input-wrapper .icon { width: 36px; height: 36px; }
+    .action-buttons {
+        /* Already flex, will be centered by form's justify-content */
+        gap: 0.4rem;
+    }
+    .action-buttons .icon { width: 38px; height: 38px; }
+    .disclaimer-text { font-size: 0.7rem; margin-top: 0.3rem; }
+}
+
+
+/* Extra Small Screens / Mobile Phones (e.g., <= 480px) */
+@media (max-width: 480px) {
+     :root {
+        --base-font-size: 14px;
+        --typing-area-height: 80px; /* Can be tricky if buttons wrap */
+        --base-padding: 0.6rem;
+    }
+
+    body {
+        padding-bottom: var(--typing-area-height); /* Update padding */
+    }
+
+    .motto { font-size: 1.2rem; padding: 0.4rem var(--base-padding); }
+    .title { font-size: 1.5rem; }
+    .subtitle { font-size: 0.8rem; }
+    .language-selector { top: 0.5rem; right: 0.5rem; }
+    .language-dropdown { padding: 0.3rem 0.5rem; font-size: 0.75rem; }
+    .srm-seal { width: 50px; }
+
+    .suggestion-list { gap: 0.6rem; }
+    .suggestion {
+        width: clamp(100px, 25vw, 120px); /* Further adjust size */
+        padding: 0.6rem;
+    }
+    .suggestion .icon { font-size: 1.6rem; width: 30px; height: 30px; min-width: 30px;}
+    .suggestion .text { font-size: 0.75rem; }
+    #scrollUp, #scrollDown { width: 36px; height: 36px; font-size: 1.3rem;}
+
+    .chat-area-wrapper { margin: 0.4rem var(--base-padding) 0; }
+    .chat-list { padding: var(--base-padding) 1.2rem; }
+
+    .message { max-width: 95%; margin-bottom: 1rem; }
+    .message .message-content { padding: 0.6rem 0.8rem; gap: 0.5rem; border-radius: 10px; }
+    .message .avatar { width: 28px; height: 28px; }
+    .message .text { font-size: 0.85rem; }
+    .message .message-content .icon { width: 24px; height: 24px; font-size: 0.9rem; }
+
+
+    .typing-area {
+        padding: 0.5rem var(--base-padding);
+         /* May need dynamic height adjustment in JS if buttons wrap unpredictably */
+    }
+    .input-wrapper { padding: 0 0.3rem; margin-bottom: 0.4rem; }
+    .typing-input { padding: 0.5rem 0.3rem; font-size: 0.85rem; }
+    .input-wrapper .icon { width: 34px; height: 34px; }
+    .action-buttons { gap: 0.3rem; }
+    .action-buttons .icon { width: 36px; height: 36px; }
+    .disclaimer-text { display: none; /* Hide disclaimer on very small screens to save space */ }
+}
+
+/* --- Additional Styles (Keep from original if needed) --- */
+/* Voice, Pulse, Wave animations etc. */
+.voice-button.active { color: #ff5c5c; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.voice-status { /* ... Keep original styles ... */ }
+.voice-indicator { /* ... Keep original styles ... */ }
+.voice-wave { /* ... Keep original styles ... */ }
+.voice-status-text { /* ... Keep original styles ... */ }
+@keyframes wave { /* ... Keep original styles ... */ }
+
+/* Notification Popup (Keep original styles, maybe adjust position in media queries if needed) */
+.notification-popup { /* ... Keep original styles ... */ }
+.notification-popup.show { /* ... Keep original styles ... */ }
+/* ... other notification styles ... */
+
+/* Hide class */
+.hide { display: none !important; } /* Use important if needed to override */
+
+/* ================================================= */
+/* START: Styles for FAQs inside a Chat Message      */
+/* MODIFY this block in your styles-css.css        */
+/* ================================================= */
+
+.message.incoming .frequent-questions {
+    /* --- ADJUST WIDTH BEHAVIOR --- */
+    width: fit-content; /* <<< CHANGE: Make block width wrap its content */
+    /* Keep max-width to prevent it becoming TOO wide if content is long */
+    max-width: calc(100% - (35px + 0.8rem + 0.5rem)); /* Adjust calc if avatar/gap differs */
+    /* --- END ADJUST WIDTH BEHAVIOR --- */
+
+    /* Keep other styles */
+    margin-top: 0.8rem;
+    margin-left: calc(35px + 0.8rem); /* Adjust calc if avatar/gap differs */
+    margin-right: 0.5rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--border-radius-m);
+    background-color: #e9eef6;
+    border: 1px solid #d8dde4;
+    box-shadow: none;
+}
+
+/* Style the optional title (no change needed here usually) */
+.message.incoming .frequent-questions h5 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #4a4a4a;
+    margin-bottom: 0.6rem;
+    text-align: left;
+}
+
+/* Target the list inside the message's FAQ block */
+.message.incoming .frequent-questions .suggestion-list {
+    /* --- ADJUST LIST WIDTH --- */
+    width: auto; /* <<< CHANGE: Allow list width to be natural */
+    /* --- END ADJUST LIST WIDTH --- */
+
+    /* Keep other styles */
+    display: block;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+/* Style individual FAQ list items (no changes needed here) */
+.message.incoming .frequent-questions .suggestion-list li {
+    background-color: transparent;
+    background-image: none !important;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0.4rem 0;
+    width: 100%; /* List items take full width OF THE LIST */
+    aspect-ratio: auto;
+    text-align: left;
+    border-bottom: 1px solid #d8dde4;
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: color 0.2s ease;
+    font-size: 0.85rem;
+    display: block;
+}
+.message.incoming .frequent-questions .suggestion-list li:last-child {
+    border-bottom: none;
+}
+.message.incoming .frequent-questions .suggestion-list li:hover {
+    color: #3367d6;
+    background-color: rgba(0, 0, 0, 0.03);
+    transform: none;
+}
+/* Hide potential icons/text elements (no change) */
+.message.incoming .frequent-questions .suggestion-list li .icon,
+.message.incoming .frequent-questions .suggestion-list li .text,
+.message.incoming .frequent-questions .suggestion-list li::before {
+    display: none;
+}
+
+
+/* --- Responsive Adjustments for In-Message FAQs --- */
+/* Update the max-width and margin calculations */
+
+@media (max-width: 768px) {
+    .message.incoming .frequent-questions {
+        /* Adjust indentation for smaller avatar (30px) + gap (0.6rem) */
+        margin-left: calc(30px + 0.6rem);
+        max-width: calc(100% - (30px + 0.6rem + 0.5rem));
+        padding: 0.6rem 0.8rem;
+        /* width: fit-content; /* Inherited */
+    }
+    /* Font sizes etc. remain the same */
+    .message.incoming .frequent-questions h5 { font-size: 0.85rem; }
+    .message.incoming .frequent-questions .suggestion-list li { font-size: 0.8rem; }
+}
+
+@media (max-width: 480px) {
+    .message.incoming .frequent-questions {
+        /* Adjust indentation for smallest avatar (28px) + gap (0.5rem) */
+        margin-left: calc(28px + 0.5rem);
+        max-width: calc(100% - (28px + 0.5rem + 0.5rem));
+        padding: 0.5rem 0.6rem;
+        /* width: fit-content; /* Inherited */
+    }
+    /* Font sizes etc. remain the same */
+    .message.incoming .frequent-questions h5 { font-size: 0.8rem; margin-bottom: 0.4rem; }
+    .message.incoming .frequent-questions .suggestion-list li { font-size: 0.75rem; }
+}
+
+/* ================================================= */
+/* END: Styles for FAQs inside a Chat Message        */
+/* ================================================= */
+
+/* === Notification Popup === */
+.notification-popup {
+    position: fixed;
+    bottom: 100px;
+    right: -350px; /* Start off-screen */
+    width: 320px;
+    padding: 1rem;
+    background: var(--background-light);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px var(--shadow-medium);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+    transition: right 0.5s ease-in-out; /* Animate the 'right' property */
+    border-left: 5px solid var(--primary-color);
+}
+
+.notification-popup.show {
+    right: 20px; /* Slide on-screen */
+}
+
+.notification-popup .bot-icon {
+    /* ... styles ... */
+     width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: var(--light-text-color); font-size: 1.3rem;
+    flex-shrink: 0;
+}
+.notification-popup .notification-content {
+    /* ... styles ... */
+    flex: 1;
+}
+.notification-popup .notification-title {
+    /* ... styles ... */
+    font-weight: 600; margin-bottom: 0.25rem; color: var(--dark-text-color);
+}
+.notification-popup .notification-message {
+    /* ... styles ... */
+    font-size: 0.9rem; color: var(--muted-text-color);
+}
+
+.notification-popup .close-btn {
+    /* Inherit from .icon-button or style specifically */
+    background: transparent;
+    color: var(--muted-text-color);
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+    /* Ensure it looks like the other icon buttons if possible */
+     width: 30px; /* Adjust size if needed */
+     height: 30px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     font-size: 1.2rem; /* Adjust icon size */
+}
+.notification-popup .close-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: var(--dark-text-color);
+}
+
+/* =========================== */
+/* === 360 Degree Button === */
+/* =========================== */
+
+/* =========================== */
+/* === 360 Degree Button === */
+/* =========================== */
+
+#button-360 {
+    position: fixed; /* Keep it fixed relative to the viewport */
+    /* --- Position Top-Left --- */
+    left: 15px;     /* Distance from the left edge */
+    top: 15px;      /* Distance from the top edge */
+    /* --- Remove Bottom/Right --- */
+    /* bottom: 120px; <-- REMOVED */
+    /* right: 20px; <-- REMOVED */
+
+    z-index: 999;    /* Ensure it stays on top of most other elements */
+
+    display: inline-block; /* Allows padding and acts like a block */
+    padding: 10px 18px;   /* Adjust padding for button size */
+    background-color: var(--primary-color); /* Use your primary color */
+    color: var(--text-color-light);       /* Use light text color */
+    text-decoration: none; /* Remove link underline */
+    font-weight: 500;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: var(--border-radius-m); /* Use your medium border radius */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+#button-360:hover {
+    background-color: #3367d6; /* Slightly darker shade of primary on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+}
+
+#button-360:active {
+    transform: translateY(0); /* Press down effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Adjust position/size on smaller screens - KEEPING TOP-LEFT */
+@media (max-width: 768px) {
+    #button-360 {
+        /* --- Position Top-Left --- */
+        left: 15px; /* Keep consistent left padding */
+        top: 15px;  /* Keep consistent top padding */
+        /* --- Remove Bottom/Right --- */
+        /* right: 15px; <-- REMOVED */
+        /* bottom: 100px; <-- REMOVED */
+
+        /* Adjust size */
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #button-360 {
+        /* --- Position Top-Left --- */
+        left: 10px; /* Slightly less padding on very small screens */
+        top: 10px;  /* Slightly less padding on very small screens */
+        /* --- Remove Bottom/Right --- */
+        /* top: 95px; <-- REMOVED/CORRECTED */
+
+        /* Adjust size */
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}
